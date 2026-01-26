@@ -31,8 +31,8 @@ public:
     }
     raw = raw / 3;
 
-    constexpr float ADC_REF_VOLT = 3.3f;     
-    constexpr float ADC_MAX      = 4095.0f;  // 12-bit
+    constexpr float ADC_REF_VOLT = 3.0f;     
+    constexpr float ADC_MAX      = 4096.0f;  // 12-bit
     constexpr float R_UP   = 100000.0f;      // for sakurapi_namiji
     constexpr float R_DOWN = 22100.0f;       // for sakurapi_namiji
 

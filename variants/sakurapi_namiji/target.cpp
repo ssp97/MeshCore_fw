@@ -11,7 +11,6 @@ AutoDiscoverRTCClock rtc_clock(fallback_clock);
 SensorManager sensors;
 
 bool radio_init() {
-  // delay(10000);  // 开机10s延时
   fallback_clock.begin();
   rtc_clock.begin(Wire);
   return radio.std_init(&SPI);
@@ -33,6 +32,6 @@ void radio_set_tx_power(uint8_t dbm) {
 }
 
 mesh::LocalIdentity radio_new_identity() {
-  RadioNoiseListener rng(radio);
+  RadioNoiseListener rng(radio.phy());
   return mesh::LocalIdentity(&rng);  // create new random identity
 }

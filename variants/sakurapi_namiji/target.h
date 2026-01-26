@@ -2,12 +2,14 @@
 
 #define RADIOLIB_STATIC_ONLY 1
 #include <RadioLib.h>
-#include <helpers/radiolib/RadioLibWrappers.h>
 #include "sakurapi_namiji_Board.h"
-#include <helpers/radiolib/CustomSX1262Wrapper.h>
-#include <helpers/radiolib/CustomSX1268Wrapper.h>
+#include <helpers/radiolib/RadioLibWrappers.h>
 #include <helpers/AutoDiscoverRTCClock.h>
 #include <helpers/SensorManager.h>
+
+// Local (variant-only) auto-detect radio + wrapper
+#include "AutoSX126xRadio.h"
+#include "NamijiAutoRadioWrapper.h"
 
 extern sakurapi_namiji_Board board;
 extern WRAPPER_CLASS radio_driver;
