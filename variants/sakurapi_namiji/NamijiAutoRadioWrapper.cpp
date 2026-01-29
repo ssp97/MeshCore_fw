@@ -181,7 +181,8 @@ void NamijiAutoRadioWrapper::onSendFinished() {
 }
 
 float NamijiAutoRadioWrapper::getLastRSSI() const {
-  return _radio ? _radio->getRSSI() : 0;
+  // Packet RSSI (last received packet). This matches existing stats usage.
+  return (_auto && _auto->ready()) ? _auto->getRSSIPacket() : (_radio ? _radio->getRSSI() : 0);
 }
 
 float NamijiAutoRadioWrapper::getLastSNR() const {
@@ -190,7 +191,16 @@ float NamijiAutoRadioWrapper::getLastSNR() const {
 
 float NamijiAutoRadioWrapper::getCurrentRSSI() {
   if (!_radio) return -200;
-  // For compatibility across variants, use the no-arg getRSSI().
+
+  // IMPORTANT: For SX126x, getRSSI() with no args returns *last packet RSSI*
+  // (SX126x::getRSSI(true)). For noise-floor calibration / LBT we need the
+  // *instantaneous* RSSI (SX126x::getRSSI(false)). Using packet RSSI here can
+  // yield bogus values like ~0 dBm when no packet has been received.
+  if (_auto && _auto->ready()) {
+    return _auto->getRSSIInst();
+  }
+
+  // Fallback (should not happen for this variant).
   return _radio->getRSSI();
 }
 

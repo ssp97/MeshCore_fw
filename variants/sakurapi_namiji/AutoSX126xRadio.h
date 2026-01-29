@@ -106,6 +106,20 @@ public:
     return ((SX126x*)_active)->spreadingFactor;
   }
 
+  // RSSI helpers
+  // NOTE: For SX126x, PhysicalLayer::getRSSI() returns the *last packet* RSSI
+  // (it calls SX126x::getRSSI(true)). For noise-floor / LBT we need the
+  // *instantaneous* RSSI, which is SX126x::getRSSI(false).
+  float getRSSIInst() const {
+    if (!_active) return -200.0f;
+    return ((SX126x*)_active)->getRSSI(false);
+  }
+
+  float getRSSIPacket() const {
+    if (!_active) return -200.0f;
+    return _active->getRSSI();
+  }
+
   bool isReceivingPacket() const {
     if (!_active) return false;
     switch (_kind) {
