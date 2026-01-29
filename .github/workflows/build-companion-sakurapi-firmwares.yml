@@ -1,0 +1,45 @@
+name: Build Companion Firmwares (SakuraPi)
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'companion-sakurapi-*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Build Environment
+        uses: ./.github/actions/setup-build-environment
+
+      - name: Build SakuraPi Companion Firmwares
+        env:
+          FIRMWARE_VERSION: ${{ env.GIT_TAG_VERSION }}
+        run: |
+          /usr/bin/env bash build.sh build-firmware \
+            sakurapi_namiji_companion_radio_usb \
+            sakurapi_namiji_companion_radio_ble
+
+      - name: Upload Workflow Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: companion-firmwares-sakurapi
+          path: out
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Companion Firmware (SakuraPi) ${{ env.GIT_TAG_VERSION }}
+          body: ""
+          draft: true
+          files: out/*
